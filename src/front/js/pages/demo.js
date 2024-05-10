@@ -6,9 +6,7 @@ import { Context } from "../store/appContext";
 export const Demo = () => {
 	const { store, actions } = useContext(Context);
 
-	useEffect(() => {
-		actions.getCurrentUserEmail();
-	}, [])
+
 
 
 	return (
