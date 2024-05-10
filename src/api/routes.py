@@ -33,7 +33,7 @@ def user_login():
     user = User.query.filter_by(email = body_email, password = body_password).first()
 
     if not user:
-        return jsonify({"error": "X"}), 401
+        return jsonify({"error": "error en credenciales"}), 401
     token = create_access_token(identity= user.id)
     
  
