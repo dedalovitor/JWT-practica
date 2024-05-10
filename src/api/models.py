@@ -24,8 +24,18 @@ class User(db.Model):
 class Pet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=False, nullable=False)
-    race = db.Column(db.String(120), unique=True, nullable=False)
+    race = db.Column(db.String(120), unique=False, nullable=False)
     age = db.Column(db.Integer, unique=False, nullable=False)
     castrated = db.Column(db.Boolean, unique=False, nullable=False, default=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False,)
+    is_active = db.Column(db.Boolean(), unique=False, nullable=True, default=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def serialize(self):
+        return {
+            "name": self.name,
+            "age": self.age,
+            "race": self.race,
+            "castrated": self.castrated,
+            "id": self.id,
+            # do not serialize the password, its a security breach
+        }
