@@ -10,9 +10,10 @@ export const Demo = () => {
 		actions.getCurrentUserEmail();
 	}, [])
 
+
 	return (
 		<div className="container">
-			HOLA USUARIO {store.getCurrentUserEmail}
+			HOLA USUARIO {store.currentUserEmail}
 		</div>
 	);
 };

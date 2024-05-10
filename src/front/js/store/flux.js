@@ -1,7 +1,7 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			currentUserEmail: null,
+			currentUserEmail: "",
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -39,7 +39,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getCurrentUserEmail: async () => {
 				const response = await fetch("https://3001-4geeksacade-reactflaskh-1gboru965s5.ws-eu111.gitpod.io/api/user", {
 					headers: {
-						"Authorization": "Bearer" + localStorage.getItem("token")
+						"Authorization": "Bearer " + localStorage.getItem("token")
 					}
 				});
 				const data = await response.json();

@@ -14,17 +14,17 @@ export const Home = () => {
 		const response = await fetch("https://3001-4geeksacade-reactflaskh-1gboru965s5.ws-eu111.gitpod.io/api/login", {
 			method: "POST",
 			headers: {
-				"Content-Type": "application/json"
+				"content-Type": "application/json"
 			},
 			body: JSON.stringify({
 				email: email,
-				password: password
+				password: password,
 			})
 		});
 		if (response.ok) {
 			const data = await response.json();
-			console.log(data.token)
 			localStorage.setItem("token", data.token);
+			await actions.getCurrentUserEmail();
 			navigate("/demo");
 		} else {
 			setError(true)
