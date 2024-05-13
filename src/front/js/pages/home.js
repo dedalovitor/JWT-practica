@@ -36,7 +36,9 @@ export const Home = () => {
 			},
 			body: JSON.stringify(pet)
 		});
-		if (response.ok) getCurrentUserPets();
+		if (response.ok) {
+			getCurrentUserPets();
+		}
 	}
 
 
@@ -84,7 +86,9 @@ export const Home = () => {
 									castrated: <input type="checkbox" disabled className="card-text" checked={x.castrated} />
 								</div>
 								<div className="card-footer">
-									<button className="btn btn-danger" onClick={() => deletePet(x.id)}>DEL</button>
+									<button className="btn btn-danger" onClick={() =>
+										deletePet(x.id)
+									}>DEL</button>
 								</div>
 							</div>
 						})}
