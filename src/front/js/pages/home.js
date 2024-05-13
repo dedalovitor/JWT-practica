@@ -115,8 +115,8 @@ export const Home = () => {
 												<input type="checkbox" className="form-check-input" id="castrated" checked={editingPet.castrated} onChange={(e) => setEditingPet({ ...editingPet, castrated: e.target.checked })} />
 												<label className="form-check-label" htmlFor="castrated">Castrated</label>
 											</div>
-											<button type="button" className="btn btn-primary mt-2" onClick={() => editPet()}>Save</button>
-											<button type="button" className="btn btn-secondary mt-2" onClick={() => setEditingPet(null)}>Cancel</button>
+											<button type="button" className="btn btn-primary m-2" onClick={() => editPet()}>Save</button>
+											<button type="button" className="btn btn-secondary m-2" onClick={() => setEditingPet(null)}>Cancel</button>
 										</form>
 									) : (
 										<>
@@ -124,8 +124,8 @@ export const Home = () => {
 											<p className="card-text">name: {x.name}</p>
 											<p className="card-text">race: {x.race}</p>
 											<p className="card-text">Castrated: {x.castrated ? 'Yes' : 'No'}</p>
-											<button className="btn btn-danger" onClick={() => deletePet(x.id)}>DEL</button>
-											<button className="btn btn-primary ml-2" onClick={() => setEditingPet({ ...x })}>Edit</button>
+											<button className="btn btn-danger m-2" onClick={() => deletePet(x.id)}>DEL</button>
+											<button className="btn btn-primary m-2" onClick={() => setEditingPet({ ...x })}>Edit</button>
 										</>
 									)}
 								</div>
