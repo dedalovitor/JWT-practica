@@ -9,6 +9,7 @@ export const Home = () => {
 	const [pet, setPet] = useState({ age: "", name: "", race: "", castrated: false });
 	const [pets, setPets] = useState([]);
 
+
 	useEffect(() => {
 		getCurrentUserPets();
 	}, [])
@@ -55,6 +56,7 @@ export const Home = () => {
 
 
 
+
 	return (
 		<div className="text-center mt-5">
 			{store.currentUserEmail ? "Hola usuario " + store.currentUserEmail : "Please register or login"}
@@ -64,7 +66,7 @@ export const Home = () => {
 					<div className="card w-25 p-3">
 						{Object.keys(pet).map((key, i) => {
 							if (typeof pet[key] != "boolean") {
-								return <input className="m-1" placeholder={key} key={i} name={key} defaultValue={pet[key]} onChange={(e) => setPet({ ...pet, [key]: e.target.value })}></input>
+								return <input className="m-1" placeholder={key} key={i} name={key} Value={pet[key]} onChange={(e) => setPet({ ...pet, [key]: e.target.value })}></input>
 							} else {
 								return <>
 									<input type="checkbox" key={i} name={key} checked={pet[key]} onChange={(e) => setPet({ ...pet, [key]: e.target.checked })}></input>
@@ -89,6 +91,7 @@ export const Home = () => {
 									<button className="btn btn-danger" onClick={() =>
 										deletePet(x.id)
 									}>DEL</button>
+									<button className="btn btn-primary ml-2" onClick={() => editPet(x)}>MODIFY</button>
 								</div>
 							</div>
 						})}
