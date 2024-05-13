@@ -36,6 +36,6 @@ class Pet(db.Model):
             "age": self.age,
             "race": self.race,
             "castrated": self.castrated,
-            "id": self.id,
+            "id": self.id
             # do not serialize the password, its a security breach
         }

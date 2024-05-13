@@ -62,7 +62,7 @@ export const Home = () => {
 					<div className="card w-25 p-3">
 						{Object.keys(pet).map((key, i) => {
 							if (typeof pet[key] != "boolean") {
-								return <input className="m-1" placeholder={key} key={i} name={key} value={pet[key]} onChange={(e) => setPet({ ...pet, [key]: e.target.value })}></input>
+								return <input className="m-1" placeholder={key} key={i} name={key} defaultValue={pet[key]} onChange={(e) => setPet({ ...pet, [key]: e.target.value })}></input>
 							} else {
 								return <>
 									<input type="checkbox" key={i} name={key} checked={pet[key]} onChange={(e) => setPet({ ...pet, [key]: e.target.checked })}></input>
@@ -84,7 +84,7 @@ export const Home = () => {
 									castrated: <input type="checkbox" disabled className="card-text" checked={x.castrated} />
 								</div>
 								<div className="card-footer">
-									<button className="btn btn-danger" onClick={() => deletePet()}>DEL</button>
+									<button className="btn btn-danger" onClick={() => deletePet(x.id)}>DEL</button>
 								</div>
 							</div>
 						})}
