@@ -104,13 +104,20 @@ def delete_pet(pet_id):
     return jsonify({"response": "Pet not deleted"}), 400
 
 
-#@api.route('/pet/<int:pet_id>', methods=['PUT'])
-#@jwt_required()
-#def modify_pet(pet_id):
- #   user_id = get_jwt_identity()
-  #  pet = Pet.query.get(pet_id)
-   # if pet.user_id == user_id:
-    #    pet.PUT = False
-     #   db.session.commit()
-      #  return jsonify({ "response": "Pet deleted correctly"}),200
-    #return jsonify({"response": "Pet not deleted"}), 400
+@api.route('/pet/<int:pet_id>', methods=['PUT'])
+@jwt_required()
+def update_pet(pet_id):
+    user_id = get_jwt_identity()
+    pet = Pet.query.filter_by(id=pet_id, user_id=user_id).first()
+
+    if not pet:
+        return jsonify({"error": "Pet not found"}), 404
+
+    pet.name = request.json.get("name", pet.name)
+    pet.age = request.json.get("age", pet.age)
+    pet.race = request.json.get("race", pet.race)
+    pet.castrated = request.json.get("castrated", pet.castrated)
+
+    db.session.commit()
+
+    return jsonify({"message": "Pet updated successfully"}), 200
