@@ -8,6 +8,7 @@ from flask_cors import CORS
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+import datetime
 
 
 api = Blueprint('api', __name__)
@@ -34,7 +35,8 @@ def user_login():
 
     if not user:
         return jsonify({"error": "error en credenciales"}), 401
-    token = create_access_token(identity= user.id)
+    expires = datetime.timedelta(hours=8)
+    token = create_access_token(identity= user.id, expires_delta=expires)
     
  
     return jsonify({"response": "Hola", "token": token}), 200
