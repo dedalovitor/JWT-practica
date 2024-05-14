@@ -32,10 +32,11 @@ class Pet(db.Model):
 
     def serialize(self):
         return {
+            "id": self.id,
             "name": self.name,
             "age": self.age,
             "race": self.race,
             "castrated": self.castrated,
-            "id": self.id
+            
             # do not serialize the password, its a security breach
         }

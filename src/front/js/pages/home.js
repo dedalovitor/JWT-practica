@@ -67,32 +67,47 @@ export const Home = () => {
 		});
 		if (response.ok) {
 			getCurrentUserPets();
+			/*updatePetLocally(editingPet);*/
 			setEditingPet(null);
 		}
 	};
 
 
-	return (
-		<div className="text-center mt-5">
-			{store.currentUserEmail ? "Hola usuario " + store.currentUserEmail : "Please register or login"}
+	/*const updatePetLocally = (updatedPet) => {
+		const updatedPets = pets.map(pet => pet.id === updatedPet.id ? updatedPet : pet);
+		setPets(updatedPets);
+	}*/
 
+
+	return (
+		<div className="mt-3">
+			<div className="container text-center mb-3">
+
+				{store.currentUserEmail ? "Hola usuario " + store.currentUserEmail : "Please register or login"}
+
+			</div>
 			{store.currentUserEmail ?
 				<div className="container">
-					<div className="card w-25 p-3">
-						{Object.keys(pet).map((key, i) => {
-							if (typeof pet[key] != "boolean") {
-								return <input className="m-1" placeholder={key} key={i} name={key} value={pet[key]} onChange={(e) => setPet({ ...pet, [key]: e.target.value })}></input>
-							} else {
-								return <>
-									<input type="checkbox" key={i} name={key} checked={pet[key]} onChange={(e) => setPet({ ...pet, [key]: e.target.checked })}></input>
-								</>
-							}
+					<div className="row">
+						<div className="col">
+							<div className="card p-3 col-10 col-sm-10 col-md-4 mb-3" >
+								{Object.keys(pet).map((key, i) => {
+									if (typeof pet[key] != "boolean") {
+										return <input className="m-1" placeholder={key} key={i} name={key} value={pet[key]} onChange={(e) => setPet({ ...pet, [key]: e.target.value })}></input>
+									} else {
+										return <>
+											<span><label htmlFor="castrated">Castrated</label><input className="m-2" type="checkbox" key={i} name={key} checked={pet[key]} onChange={(e) => setPet({ ...pet, [key]: e.target.checked })}></input></span>
 
-						})}
-						<button className="btn btn-success m-2" onClick={() => createPet()}>CREATE PET</button>
+										</>
+									}
+
+								})}
+								<button className="btn btn-success m-2" onClick={() => createPet()}>CREATE PET</button>
+							</div>
+						</div>
 					</div>
 
-					<div className="row">
+					<div className="row text-center">
 						{pets.map((x) => (
 							<div key={x.id} className="card m-2" style={{ width: "18rem" }}>
 								<img src="https://img.freepik.com/fotos-premium/ilustracion-perro-dibujos-animados-3d-sobre-fondo-amarillo-pastel_639785-1211.jpg" className="card-img-top" alt="..." />
@@ -120,6 +135,7 @@ export const Home = () => {
 										</form>
 									) : (
 										<>
+											<p className="card-text">id: {x.id}</p>
 											<p className="card-text">age: {x.age}</p>
 											<p className="card-text">name: {x.name}</p>
 											<p className="card-text">race: {x.race}</p>
@@ -136,6 +152,6 @@ export const Home = () => {
 				: "Please register a pet!"
 			}
 
-		</div>
+		</div >
 	);
 };

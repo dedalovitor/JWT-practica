@@ -91,8 +91,9 @@ def create_pet():
 @jwt_required()
 def get_all_current_user_pets():
     user_id = get_jwt_identity()
-    pets = Pet.query.filter_by(user_id=user_id, is_active = True)
-    return jsonify({"results": [x.serialize() for x in pets]}), 200
+    pets = Pet.query.filter_by(user_id=user_id, is_active = True).order_by(Pet.id).all()
+    pets_serialized = [pet.serialize() for pet in pets]
+    return jsonify({"results": pets_serialized}), 200
 
 @api.route('/pet/<int:pet_id>', methods=['DELETE'])
 @jwt_required()
