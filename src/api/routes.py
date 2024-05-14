@@ -61,13 +61,8 @@ def user_register():
     if user_already_exist:
         return jsonify({"response": "email already exist"}), 300
     new_user = User(name= body_name, email=body_email, password=body_password)
-    print("@@@@@@@@")
-    print(new_user.id)
     db.session.add(new_user)
     db.session.commit()
-    print("@@@@@@@@")
-    print(new_user.id)
-
  
     return jsonify({"response": "User registered successfully"}), 200
 

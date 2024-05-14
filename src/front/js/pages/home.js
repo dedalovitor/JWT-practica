@@ -80,7 +80,7 @@ export const Home = () => {
 
 
 	return (
-		<div className="mt-3">
+		<div className="mt-3 text-center ">
 			<div className="container text-center mb-3">
 
 				{store.currentUserEmail ? "Hola usuario " + store.currentUserEmail : "Please register or login"}
