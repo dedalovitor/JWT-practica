@@ -88,7 +88,7 @@ export const Home = () => {
 			</div>
 			{store.currentUserEmail ?
 				<div className="container">
-					<div className="row">
+					<div className="row text-center">
 						<div className="col">
 							<div className="card p-3 col-10 col-sm-10 col-md-4 mb-3" >
 								{Object.keys(pet).map((key, i) => {
