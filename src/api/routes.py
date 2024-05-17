@@ -90,6 +90,24 @@ def get_all_current_user_pets():
     pets_serialized = [pet.serialize() for pet in pets]
     return jsonify({"results": pets_serialized}), 200
 
+# @api.route('/pet/<int:pet_id>', methods=['GET'])
+#@jwt_required()
+#def get_all_current_user_pets():
+   # user_id = get_jwt_identity()
+  #  pets = Pet.query.filter_by(user_id=user_id, is_active = True).all()
+ #   pets_serialized = [pet.serialize() for pet in pets]
+#    return jsonify({"results": pets_serialized}), 200
+
+@api.route('/pet/<int:pet_id>', methods=['GET'])
+def get_pet_by_id(pet_id):
+    pet = Pet.query.filter_by(id=pet_id).first()
+    return jsonify({"result": pet.serialize()}), 200
+
+#@api.route('/regions/<int:region_id>', methods=['GET'])
+#def get_regions_by_id(region_id):
+#    region = Region.query.filter_by(id=region_id).first()
+#    return jsonify({"result": region.inforegion()}), 200
+
 @api.route('/pet/<int:pet_id>', methods=['DELETE'])
 @jwt_required()
 def delete_pet(pet_id):

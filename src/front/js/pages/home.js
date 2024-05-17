@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Home = () => {
 	const navigate = useNavigate();
@@ -142,6 +142,9 @@ export const Home = () => {
 											<p className="card-text">Castrated: {x.castrated ? 'Yes' : 'No'}</p>
 											<button className="btn btn-danger m-2" onClick={() => deletePet(x.id)}>DEL</button>
 											<button className="btn btn-primary m-2" onClick={() => setEditingPet({ ...x })}>Edit</button>
+											<Link to={"single/" + x.id}>
+												<button className="btn btn-primary m-2">Ir a detalles</button>
+											</Link>
 										</>
 									)}
 								</div>

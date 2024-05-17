@@ -17,6 +17,7 @@ import { Navbar } from "./component/navbar";
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
     // you can set the basename on the .env file located at the root of this project, E.g: BASENAME=/react-hello-webapp/
+    //<Route element={<CityDetail />} path="/ciudad/:id" />
     const basename = process.env.BASENAME || "";
 
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
@@ -31,7 +32,8 @@ const Layout = () => {
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Register />} path="/Register" />
                         <Route element={<Login />} path="/login" />
-                        <Route element={<Single />} path="/single/:theid" />
+                        <Route element={<Single />} path="/single/:id" />
+
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
 
