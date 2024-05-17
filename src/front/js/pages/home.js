@@ -17,7 +17,7 @@ export const Home = () => {
 
 
 	const getCurrentUserPets = async () => {
-		const response = await fetch("https://3001-4geeksacade-reactflaskh-1gboru965s5.ws-eu111.gitpod.io/api/pets", {
+		const response = await fetch("https://3001-4geeksacade-reactflaskh-1gboru965s5.ws-eu114.gitpod.io/api/pets", {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -30,7 +30,7 @@ export const Home = () => {
 
 
 	const createPet = async () => {
-		const response = await fetch("https://3001-4geeksacade-reactflaskh-1gboru965s5.ws-eu111.gitpod.io/api/pet", {
+		const response = await fetch("https://3001-4geeksacade-reactflaskh-1gboru965s5.ws-eu114.gitpod.io/api/pet", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -45,7 +45,7 @@ export const Home = () => {
 
 
 	const deletePet = async (id) => {
-		const response = await fetch("https://3001-4geeksacade-reactflaskh-1gboru965s5.ws-eu111.gitpod.io/api/pet/" + id, {
+		const response = await fetch("https://3001-4geeksacade-reactflaskh-1gboru965s5.ws-eu114.gitpod.io/api/pet/" + id, {
 			method: "DELETE",
 			headers: {
 				"Content-Type": "application/json",
@@ -57,7 +57,7 @@ export const Home = () => {
 
 
 	const editPet = async () => {
-		const response = await fetch(`https://3001-4geeksacade-reactflaskh-1gboru965s5.ws-eu111.gitpod.io/api/pet/${editingPet.id}`, {
+		const response = await fetch(`https://3001-4geeksacade-reactflaskh-1gboru965s5.ws-eu114.gitpod.io/api/pet/${editingPet.id}`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
