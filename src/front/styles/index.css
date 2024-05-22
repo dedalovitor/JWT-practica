@@ -1,3 +1,14 @@
 /* 
     General Styles used on every website (Don't Repeat Yourself)
 */
+.crop-container {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.cropped-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}

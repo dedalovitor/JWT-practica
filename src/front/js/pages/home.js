@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 export const Home = () => {
 	const navigate = useNavigate();
 	const { store, actions } = useContext(Context);
-	const [pet, setPet] = useState({ age: "", name: "", race: "", castrated: false });
+	const [pet, setPet] = useState({ age: "", name: "", race: "", castrated: false, image_pet: "" });
 	const [pets, setPets] = useState([]);
 	const [editingPet, setEditingPet] = useState(null);
 
@@ -15,6 +15,12 @@ export const Home = () => {
 		getCurrentUserPets();
 	}, [])
 
+
+	// Función para manejar la selección de imagen
+	const handleImageChange = (e) => {
+		const file = e.target.files[0];
+		setPet({ ...pet, image_pet: file });
+	};
 
 	const getCurrentUserPets = async () => {
 		const response = await fetch("https://3001-4geeksacade-reactflaskh-1gboru965s5.ws-eu114.gitpod.io/api/pets", {
@@ -28,15 +34,23 @@ export const Home = () => {
 		setPets(data.results);
 	}
 
-
+	/*
+	 necesitas enviar la imagen al backend cuando se crea una mascota. Esto implicará utilizar FormData para enviar la imagen como parte de la solicitud. Aquí está la parte modificada del código para la función createPet:
+	*/
 	const createPet = async () => {
+		const formData = new FormData();
+		formData.append("name", pet.name);
+		formData.append("age", pet.age);
+		formData.append("race", pet.race);
+		formData.append("castrated", pet.castrated);
+		formData.append("image_pet", pet.image_pet);
+
 		const response = await fetch("https://3001-4geeksacade-reactflaskh-1gboru965s5.ws-eu114.gitpod.io/api/pet", {
 			method: "POST",
 			headers: {
-				"Content-Type": "application/json",
 				"Authorization": "Bearer " + localStorage.getItem("token")
 			},
-			body: JSON.stringify(pet)
+			body: formData
 		});
 		if (response.ok) {
 			getCurrentUserPets();
@@ -92,7 +106,14 @@ export const Home = () => {
 						<div className="col">
 							<div className="card p-3 col-10 col-sm-10 col-md-4 mb-3" >
 								{Object.keys(pet).map((key, i) => {
-									if (typeof pet[key] != "boolean") {
+									if (key === 'image_pet') {
+										return (
+											<div key={i} className="form-group">
+												<label htmlFor="image_pet">Image</label>
+												<input type="file" className="form-control" id="image_pet" onChange={handleImageChange} />
+											</div>
+										);
+									} else if (typeof pet[key] != "boolean") {
 										return <input className="m-1" placeholder={key} key={i} name={key} value={pet[key]} onChange={(e) => setPet({ ...pet, [key]: e.target.value })}></input>
 									} else {
 										return <>
@@ -110,7 +131,6 @@ export const Home = () => {
 					<div className="row text-center">
 						{pets.map((x) => (
 							<div key={x.id} className="card m-2" style={{ width: "18rem" }}>
-								<img src="https://img.freepik.com/fotos-premium/ilustracion-perro-dibujos-animados-3d-sobre-fondo-amarillo-pastel_639785-1211.jpg" className="card-img-top" alt="..." />
 								<div className="card-body">
 									{editingPet && editingPet.id === x.id ? (
 										<form>
@@ -135,6 +155,22 @@ export const Home = () => {
 										</form>
 									) : (
 										<>
+											{x.image_pet ? (
+												<div className="crop-container">
+													<img
+														src={`data:image/jpeg;base64,${x.image_pet}`}
+														className="card-img-top cropped-image"
+														alt={`Image of ${x.name}`}
+													/>
+												</div>
+											) : (
+												// Si no hay imagen, muestra la imagen predeterminada
+												<img
+													src="https://img.freepik.com/fotos-premium/ilustracion-perro-dibujos-animados-3d-sobre-fondo-amarillo-pastel_639785-1211.jpg"
+													className="card-img-top"
+													alt="..."
+												/>
+											)}
 											<p className="card-text">id: {x.id}</p>
 											<p className="card-text">age: {x.age}</p>
 											<p className="card-text">name: {x.name}</p>

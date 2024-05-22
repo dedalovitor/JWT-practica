@@ -11,6 +11,7 @@ from flask_jwt_extended import jwt_required
 import datetime
 
 
+
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
@@ -71,16 +72,21 @@ def user_register():
 @jwt_required()
 def create_pet():
     user_id = get_jwt_identity()
-    body_name = request.json.get("name")
-    body_age = request.json.get("age")
-    body_race = request.json.get("race")
-    body_castrated = request.json.get("castrated")   
-    new_pet = Pet(name= body_name, age=int(body_age), race=body_race, castrated=body_castrated, user_id=user_id)
+    body_name = request.form.get("name")
+    body_age = request.form.get("age")
+    body_race = request.form.get("race")
+    body_castrated = request.form.get("castrated") == 'true'  # Convert to boolean
+    if 'image_pet' in request.files:
+        body_image_pet = request.files['image_pet'].read()  # Obtener el contenido binario de la imagen
+    else:
+        body_image_pet = None  # Si no se proporciona imagen, establecerla como None
+
+    new_pet = Pet(name=body_name, age=int(body_age), race=body_race, castrated=body_castrated, user_id=user_id, image_pet=body_image_pet)
     db.session.add(new_pet)
     db.session.commit()
 
- 
     return jsonify({"response": "Pet registered successfully"}), 200
+
 
 @api.route('/pets', methods=['GET'])
 @jwt_required()
@@ -90,23 +96,13 @@ def get_all_current_user_pets():
     pets_serialized = [pet.serialize() for pet in pets]
     return jsonify({"results": pets_serialized}), 200
 
-# @api.route('/pet/<int:pet_id>', methods=['GET'])
-#@jwt_required()
-#def get_all_current_user_pets():
-   # user_id = get_jwt_identity()
-  #  pets = Pet.query.filter_by(user_id=user_id, is_active = True).all()
- #   pets_serialized = [pet.serialize() for pet in pets]
-#    return jsonify({"results": pets_serialized}), 200
+
 
 @api.route('/pet/<int:pet_id>', methods=['GET'])
 def get_pet_by_id(pet_id):
     pet = Pet.query.filter_by(id=pet_id).first()
     return jsonify({"result": pet.serialize()}), 200
 
-#@api.route('/regions/<int:region_id>', methods=['GET'])
-#def get_regions_by_id(region_id):
-#    region = Region.query.filter_by(id=region_id).first()
-#    return jsonify({"result": region.inforegion()}), 200
 
 @api.route('/pet/<int:pet_id>', methods=['DELETE'])
 @jwt_required()
