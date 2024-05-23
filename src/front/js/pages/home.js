@@ -45,7 +45,7 @@ export const Home = () => {
 		formData.append("castrated", pet.castrated);
 		formData.append("image_pet", pet.image_pet);
 
-		const response = await fetch("/api/pet", {
+		const response = await fetch("https://3001-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/api/pet", {
 			method: "POST",
 			headers: {
 				"Authorization": "Bearer " + localStorage.getItem("token")
