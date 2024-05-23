@@ -21,6 +21,10 @@ app.url_map.strict_slashes = False
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_KEY") # Change this!
 jwt = JWTManager(app)
 
+# Configurar la carpeta de carga de archivos
+app.config['UPLOAD_FOLDER'] = 'uploads'
+
+
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:

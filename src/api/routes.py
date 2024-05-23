@@ -77,7 +77,12 @@ def create_pet():
     body_race = request.form.get("race")
     body_castrated = request.form.get("castrated") == 'true'  # Convert to boolean
     if 'image_pet' in request.files:
-        body_image_pet = request.files['image_pet'].read()  # Obtener el contenido binario de la imagen
+    # Guardar la imagen en el sistema de archivos
+        image_file = request.files['image_pet']
+        filename = secure_filename(image_file.filename)
+        image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        image_file.save(image_path)
+        body_image_pet = image_path  # Guardar la ruta de la imagen en la base de datos
     else:
         body_image_pet = None  # Si no se proporciona imagen, establecerla como None
 

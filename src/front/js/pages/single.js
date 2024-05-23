@@ -16,7 +16,7 @@ export const Single = props => {
 
 	const getPetDetails = async () => {
 		try {
-			const response = await fetch(`https://3001-4geeksacade-reactflaskh-1gboru965s5.ws-eu114.gitpod.io/api/pet/${params.id}`, {
+			const response = await fetch(`https://3001-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/api/pet/${params.id}`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -46,10 +46,22 @@ export const Single = props => {
 			{store.currentUserEmail ? "Hola usuario " + store.currentUserEmail : "Please register or login"}
 
 			<div className="row mt-4 text-center">
-
-				<div className="text-center">
-					<img src="https://img.freepik.com/fotos-premium/ilustracion-perro-dibujos-animados-3d-sobre-fondo-amarillo-pastel_639785-1211.jpg" className="card-img-top w-25 " alt="..." />
-				</div>
+				{petDetails.image_pet ? (
+					<div className="crop-container">
+						<img
+							src={`data:image/jpeg;base64,${petDetails.image_pet}`}
+							className="card-img-top cropped-image"
+							alt={`Image of ${petDetails.name}`}
+						/>
+					</div>
+				) : (
+					// Si no hay imagen, muestra la imagen predeterminada
+					<img
+						src="https://img.freepik.com/fotos-premium/ilustracion-perro-dibujos-animados-3d-sobre-fondo-amarillo-pastel_639785-1211.jpg"
+						className="card-img-top"
+						alt="..."
+					/>
+				)}
 				<h2 className="card-text">name: {petDetails.name}</h2>
 				<p className="card-text">id: {petDetails.id}</p>
 

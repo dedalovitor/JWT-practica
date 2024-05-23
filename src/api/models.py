@@ -25,7 +25,8 @@ class User(db.Model):
 
 class Pet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    image_pet = db.Column(db.LargeBinary, nullable=True)  # Cambio el tipo de campo a LargeBinary no a cadena de string
+    # Cambiar para almacenar solo la ruta de la imagen en lugar de la imagen en sí
+    image_pet = db.Column(db.String(255), nullable=True)
     name = db.Column(db.String(120), unique=False, nullable=False)
     race = db.Column(db.String(120), unique=False, nullable=False)
     age = db.Column(db.Integer, unique=False, nullable=False)
@@ -34,10 +35,11 @@ class Pet(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def serialize(self):
-        image_pet_base64 = base64.b64encode(self.image_pet).decode() if self.image_pet else None
+        # Convierte la imagen binaria a base64 si existe, de lo contrario, establece None
+        #image_pet_base64 = base64.b64encode(self.image_pet).decode() if self.image_pet else None
         return {
             "id": self.id,
-            "image_pet": image_pet_base64,            
+            "image_pet": self.image_pet,            
             "name": self.name,
             "age": self.age,
             "race": self.race,
@@ -46,14 +48,17 @@ class Pet(db.Model):
             # do not serialize the password, its a security breach
         }
 
-# Verificamos si estamos en el contexto de la aplicación Flask antes de ejecutar el código de alteración de la tabla
+# Verificamos si estamos en el contexto de la aplicación Flask antes de ejecutar el código de alteración de la tabla. Verifica si el script se está ejecutando directamente y no como módulo importado
 if __name__ == '__main__':
+    # Entramos en el contexto de la aplicación Flask
     with current_app.app_context():
         try:
-            # Realizar la alteración de la tabla
+            # Intenta alterar la tabla pet en la base de datos, cambiando el tipo de la columna image_pet a BYTEA
             db.session.execute(text("ALTER TABLE pet ALTER COLUMN image_pet TYPE BYTEA USING image_pet::bytea"))
+            # Confirma la transacción
             db.session.commit()
         except Exception as e:
-            # Si hay algún error, imprimirlo para depuración
+            # Si ocurre algún error, imprímelo para depuración
             print(e)
+            # Realiza un rollback de la transacción
             db.session.rollback()
