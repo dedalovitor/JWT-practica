@@ -80,19 +80,34 @@ export const Home = () => {
 
 
 	const editPet = async () => {
+		const formData = new FormData();
+		formData.append("name", editingPet.name);
+		formData.append("age", editingPet.age);
+		formData.append("race", editingPet.race);
+		formData.append("castrated", editingPet.castrated);
+
+		// Verifica si hay una imagen adjunta en editingPet.image_pet
+		if (editingPet.image_pet instanceof File) {
+			formData.append("image_pet", editingPet.image_pet);
+		}
+
 		const response = await fetch(`https://3001-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/api/pet/${editingPet.id}`, {
 			method: "PUT",
 			headers: {
-				"Content-Type": "application/json",
 				"Authorization": "Bearer " + localStorage.getItem("token")
 			},
-			body: JSON.stringify(editingPet)
+			body: formData
 		});
 		if (response.ok) {
+			const data = await response.json();
+			// Actualiza la mascota editada con la nueva URL de la imagen
+			setEditingPet({ ...editingPet, image_pet_url: data.image_pet_url });
+			// Actualiza la lista de mascotas para reflejar los cambios
 			getCurrentUserPets();
 			setEditingPet(null);
 		}
 	};
+
 
 
 	return (
@@ -136,6 +151,10 @@ export const Home = () => {
 								<div className="card-body">
 									{editingPet && editingPet.id === x.id ? (
 										<form>
+											<div className="form-group">
+												<label htmlFor="image_pet">Image</label>
+												<input type="file" className="form-control" id="image_pet" onChange={handleImageChange} />
+											</div>
 											<div className="form-group">
 												<label htmlFor="name">Name</label>
 												<input type="text" className="form-control" id="name" value={editingPet.name} onChange={(e) => setEditingPet({ ...editingPet, name: e.target.value })} />

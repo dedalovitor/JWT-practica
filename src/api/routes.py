@@ -134,14 +134,22 @@ def update_pet(pet_id):
     if not pet:
         return jsonify({"error": "Pet not found"}), 404
 
-    pet.name = request.json.get("name", pet.name)
-    pet.age = request.json.get("age", pet.age)
-    pet.race = request.json.get("race", pet.race)
-    pet.castrated = request.json.get("castrated", pet.castrated)
+    pet.name = request.form.get("name", pet.name)
+    pet.age = request.form.get("age", pet.age)
+    pet.race = request.form.get("race", pet.race)
+    pet.castrated = request.form.get("castrated") == 'true'
+
+    if 'image_pet' in request.files:
+        image_file = request.files['image_pet']
+        if image_file.filename != '':
+            filename = secure_filename(image_file.filename)
+            image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            image_file.save(image_path)
+            pet.image_pet_url = f"https://5500-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/{filename}"
 
     db.session.commit()
 
-    return jsonify({"message": "Pet updated successfully"}), 200
+    return jsonify({"message": "Pet updated successfully", "image_pet_url": pet.image_pet_url}), 200
 
 # Línea para configurar la ruta estática
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')  # Obtén la ruta completa de la carpeta de uploads
