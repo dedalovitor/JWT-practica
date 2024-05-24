@@ -12,6 +12,8 @@ from flask_jwt_extended import jwt_required
 import datetime
 from werkzeug.utils import secure_filename
 import os  # <--- Agregar esta línea para importar el módulo os
+from PIL import Image
+from io import BytesIO
 
 
 
