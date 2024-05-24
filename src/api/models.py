@@ -26,7 +26,7 @@ class User(db.Model):
 class Pet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # Cambiar para almacenar solo la ruta de la imagen en lugar de la imagen en sí
-    image_pet = db.Column(db.String(255), nullable=True)
+    image_pet_url = db.Column(db.String(255), nullable=True)
     name = db.Column(db.String(120), unique=False, nullable=False)
     race = db.Column(db.String(120), unique=False, nullable=False)
     age = db.Column(db.Integer, unique=False, nullable=False)
@@ -39,7 +39,7 @@ class Pet(db.Model):
         #image_pet_base64 = base64.b64encode(self.image_pet).decode() if self.image_pet else None
         return {
             "id": self.id,
-            "image_pet": self.image_pet,            
+            "image_pet_url": self.image_pet_url,            
             "name": self.name,
             "age": self.age,
             "race": self.race,

@@ -1,6 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+from flask import current_app, send_from_directory  # Importa send_from_directory
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Pet
 from api.utils import generate_sitemap, APIException
@@ -9,6 +10,8 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 import datetime
+from werkzeug.utils import secure_filename
+import os  # <--- Agregar esta línea para importar el módulo os
 
 
 
@@ -86,7 +89,7 @@ def create_pet():
     else:
         body_image_pet = None  # Si no se proporciona imagen, establecerla como None
 
-    new_pet = Pet(name=body_name, age=int(body_age), race=body_race, castrated=body_castrated, user_id=user_id, image_pet=body_image_pet)
+    new_pet = Pet(name=body_name, age=int(body_age), race=body_race, castrated=body_castrated, user_id=user_id, image_pet_url=body_image_pet)
     db.session.add(new_pet)
     db.session.commit()
 
@@ -138,3 +141,10 @@ def update_pet(pet_id):
     db.session.commit()
 
     return jsonify({"message": "Pet updated successfully"}), 200
+
+# Línea para configurar la ruta estática
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')  # Obtén la ruta completa de la carpeta de uploads
+
+@api.route('/uploads/<path:filename>')  # Define una ruta para servir archivos desde la carpeta uploads
+def uploaded_file(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)  # Sirve el archivo desde la carpeta de uploads

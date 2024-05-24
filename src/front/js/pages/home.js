@@ -148,14 +148,12 @@ export const Home = () => {
 										</form>
 									) : (
 										<>
-											{x.image_pet ? (
-												<div className="crop-container">
-													<img
-														src={`data:image/jpeg;base64,${x.image_pet}`}
-														className="card-img-top cropped-image"
-														alt={`Image of ${x.name}`}
-													/>
-												</div>
+											{x.image_pet_url ? (
+												<img
+													src={"https://dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/" + x.image_pet_url}
+													className="card-img-top"
+													alt={`Image of ${x.name}`}
+												/>
 											) : (
 												// Si no hay imagen, muestra la imagen predeterminada
 												<img
