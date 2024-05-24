@@ -49,7 +49,7 @@ export const Single = props => {
 				{petDetails.image_pet_url ? (
 					<div className="crop-container">
 						<img
-							src={`https://raw.githubusercontent.com/dedalovitor/JWT-practica/main/${petDetails.image_pet_url}`}
+							src={petDetails.image_pet_url}
 							className="card-img-top cropped-image"
 							alt={`Image of ${petDetails.name}`}
 						/>

@@ -23,16 +23,25 @@ export const Home = () => {
 	};
 
 	const getCurrentUserPets = async () => {
-		const response = await fetch("https://3001-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/api/pets", {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				"Authorization": "Bearer " + localStorage.getItem("token")
+		try {
+			const response = await fetch("https://3001-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/api/pets", {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": "Bearer " + localStorage.getItem("token")
+				}
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to fetch pets");
 			}
-		});
-		const data = await response.json();
-		setPets(data.results);
-	}
+
+			const data = await response.json();
+			setPets(data.results);
+		} catch (error) {
+			console.error("Error fetching pets:", error);
+		}
+	};
 
 	/*
 	 necesitas enviar la imagen al backend cuando se crea una mascota. Esto implicará utilizar FormData para enviar la imagen como parte de la solicitud. Aquí está la parte modificada del código para la función createPet:
@@ -150,7 +159,7 @@ export const Home = () => {
 										<>
 											{x.image_pet_url ? (
 												<img
-													src={"https://raw.githubusercontent.com/dedalovitor/JWT-practica/main/" + x.image_pet_url}
+													src={x.image_pet_url}
 													className="card-img-top"
 													alt={`Image of ${x.name}`}
 												/>

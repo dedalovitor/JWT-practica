@@ -85,11 +85,12 @@ def create_pet():
         filename = secure_filename(image_file.filename)
         image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         image_file.save(image_path)
-        body_image_pet = image_path  # Guardar la ruta de la imagen en la base de datos
+    # Construye la URL de la imagen en el servidor de Gitpod
+        image_url = f"https://5500-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/{filename}"
     else:
-        body_image_pet = None  # Si no se proporciona imagen, establecerla como None
+        image_url = None  # Si no se proporciona imagen, establecerla como None
 
-    new_pet = Pet(name=body_name, age=int(body_age), race=body_race, castrated=body_castrated, user_id=user_id, image_pet_url=body_image_pet)
+    new_pet = Pet(name=body_name, age=int(body_age), race=body_race, castrated=body_castrated, user_id=user_id, image_pet_url=image_url)
     db.session.add(new_pet)
     db.session.commit()
 
