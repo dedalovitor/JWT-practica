@@ -150,7 +150,7 @@ export const Home = () => {
 										<>
 											{x.image_pet_url ? (
 												<img
-													src={"https://dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/" + x.image_pet_url}
+													src={"https://raw.githubusercontent.com/dedalovitor/JWT-practica/main/" + x.image_pet_url}
 													className="card-img-top"
 													alt={`Image of ${x.name}`}
 												/>

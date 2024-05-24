@@ -46,10 +46,10 @@ export const Single = props => {
 			{store.currentUserEmail ? "Hola usuario " + store.currentUserEmail : "Please register or login"}
 
 			<div className="row mt-4 text-center">
-				{petDetails.image_pet ? (
+				{petDetails.image_pet_url ? (
 					<div className="crop-container">
 						<img
-							src={`data:image/jpeg;base64,${petDetails.image_pet}`}
+							src={`https://raw.githubusercontent.com/dedalovitor/JWT-practica/main/${petDetails.image_pet_url}`}
 							className="card-img-top cropped-image"
 							alt={`Image of ${petDetails.name}`}
 						/>
