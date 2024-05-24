@@ -47,10 +47,10 @@ export const Single = props => {
 
 			<div className="row mt-4 text-center">
 				{petDetails.image_pet_url ? (
-					<div className="crop-container">
+					<div className="container">
 						<img
 							src={petDetails.image_pet_url}
-							className="card-img-top cropped-image"
+							className="card-img-top"
 							alt={`Image of ${petDetails.name}`}
 						/>
 					</div>

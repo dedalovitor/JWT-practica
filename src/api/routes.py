@@ -86,7 +86,7 @@ def create_pet():
         image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         image_file.save(image_path)
     # Construye la URL de la imagen en el servidor de Gitpod
-        image_url = f"https://5500-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/{filename}"
+        image_url = f"https://5500-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/uploads/{filename}"
     else:
         image_url = None  # Si no se proporciona imagen, establecerla como None
 
@@ -145,11 +145,15 @@ def update_pet(pet_id):
             filename = secure_filename(image_file.filename)
             image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
             image_file.save(image_path)
-            pet.image_pet_url = f"https://5500-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/{filename}"
+            # Reemplazar la imagen existente con la nueva
+            if pet.image_pet_url:
+                os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], os.path.basename(pet.image_pet_url)))
+            pet.image_pet_url = f"https://5500-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/uploads/{filename}"
 
     db.session.commit()
 
     return jsonify({"message": "Pet updated successfully", "image_pet_url": pet.image_pet_url}), 200
+
 
 # Línea para configurar la ruta estática
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')  # Obtén la ruta completa de la carpeta de uploads

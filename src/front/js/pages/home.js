@@ -8,7 +8,7 @@ export const Home = () => {
 	const { store, actions } = useContext(Context);
 	const [pet, setPet] = useState({ age: "", name: "", race: "", castrated: false, image_pet: "" });
 	const [pets, setPets] = useState([]);
-	const [editingPet, setEditingPet] = useState(null);
+	const [editingPet, setEditingPet] = useState({ age: "", name: "", race: "", castrated: false, image_pet: "" });
 
 
 	useEffect(() => {
@@ -20,6 +20,11 @@ export const Home = () => {
 	const handleImageChange = (e) => {
 		const file = e.target.files[0];
 		setPet({ ...pet, image_pet: file });
+	};
+
+	const handleImageChange1 = (e) => {
+		const file = e.target.files[0];
+		setEditingPet({ ...editingPet, image_pet: file });
 	};
 
 	const getCurrentUserPets = async () => {
@@ -63,6 +68,10 @@ export const Home = () => {
 		});
 		if (response.ok) {
 			getCurrentUserPets();
+			setPet({ age: "", name: "", race: "", castrated: false, image_pet: "" });
+			// La siguiente línea de código se ejecutará después de que el estado se haya actualizado
+			console.log("Campos del formulario vaciados");
+
 		}
 	}
 
@@ -85,11 +94,8 @@ export const Home = () => {
 		formData.append("age", editingPet.age);
 		formData.append("race", editingPet.race);
 		formData.append("castrated", editingPet.castrated);
+		formData.append("image_pet", editingPet.image_pet);
 
-		// Verifica si hay una imagen adjunta en editingPet.image_pet
-		if (editingPet.image_pet instanceof File) {
-			formData.append("image_pet", editingPet.image_pet);
-		}
 
 		const response = await fetch(`https://3001-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/api/pet/${editingPet.id}`, {
 			method: "PUT",
@@ -99,12 +105,10 @@ export const Home = () => {
 			body: formData
 		});
 		if (response.ok) {
-			const data = await response.json();
-			// Actualiza la mascota editada con la nueva URL de la imagen
-			setEditingPet({ ...editingPet, image_pet_url: data.image_pet_url });
+
 			// Actualiza la lista de mascotas para reflejar los cambios
 			getCurrentUserPets();
-			setEditingPet(null);
+			setEditingPet({ age: "", name: "", race: "", castrated: false, image_pet: "" });
 		}
 	};
 
@@ -153,7 +157,7 @@ export const Home = () => {
 										<form>
 											<div className="form-group">
 												<label htmlFor="image_pet">Image</label>
-												<input type="file" className="form-control" id="image_pet" onChange={handleImageChange} />
+												<input type="file" className="form-control" id="image_pet" onChange={handleImageChange1} />
 											</div>
 											<div className="form-group">
 												<label htmlFor="name">Name</label>
