@@ -52,6 +52,7 @@ export const Single = props => {
 							src={petDetails.image_pet_url}
 							className="card-img-top"
 							alt={`Image of ${petDetails.name}`}
+							style={{ width: "300px", height: "300px" }} // Estilos en línea para establecer el tamaño de la imagen
 						/>
 					</div>
 				) : (
@@ -60,6 +61,7 @@ export const Single = props => {
 						src="https://img.freepik.com/fotos-premium/ilustracion-perro-dibujos-animados-3d-sobre-fondo-amarillo-pastel_639785-1211.jpg"
 						className="card-img-top"
 						alt="..."
+						style={{ width: "300px", height: "300px" }} // Estilos en línea para establecer el tamaño de la imagen
 					/>
 				)}
 				<h2 className="card-text">name: {petDetails.name}</h2>
