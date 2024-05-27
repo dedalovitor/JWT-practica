@@ -43,7 +43,7 @@ export const Login = () => {
                         setEmail(e.target.value);
                     }}></input>
                 </div>
-                <div>
+                <div className="mb-2">
                     <label htmlFor="password">Password</label>
                     <input name="password" placeholder="password" value={password} onChange={(e) => {
                         setError(false);

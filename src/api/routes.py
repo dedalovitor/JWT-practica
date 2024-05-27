@@ -12,8 +12,11 @@ from flask_jwt_extended import jwt_required
 import datetime
 from werkzeug.utils import secure_filename
 import os  # <--- Agregar esta línea para importar el módulo os
-from PIL import Image
+from PIL import Image, ImageOps
 from io import BytesIO
+import re
+from werkzeug.security import generate_password_hash, check_password_hash
+from validate_email_address import validate_email
 
 
 
@@ -33,19 +36,21 @@ def handle_hello():
     return jsonify(response_body), 200
 
 
+
 @api.route('/login', methods=['POST'])
 def user_login():
     body_email = request.json.get("email")
     body_password = request.json.get("password")
-    user = User.query.filter_by(email = body_email, password = body_password).first()
+    user = User.query.filter_by(email=body_email).first()
 
-    if not user:
+    if not user or not check_password_hash(user.password, body_password):
         return jsonify({"error": "error en credenciales"}), 401
+
     expires = datetime.timedelta(hours=8)
-    token = create_access_token(identity= user.id, expires_delta=expires)
-    
- 
+    token = create_access_token(identity=user.id, expires_delta=expires)
+
     return jsonify({"response": "Hola", "token": token}), 200
+
 
 
 @api.route('/user', methods=['GET'])
@@ -63,10 +68,32 @@ def user_register():
     body_name = request.json.get("name")
     body_email = request.json.get("email")
     body_password = request.json.get("password")
+
+    # Verificar si el correo electrónico ya está en uso
     user_already_exist = User.query.filter_by(email = body_email).first()
     if user_already_exist:
         return jsonify({"response": "email already exist"}), 300
-    new_user = User(name= body_name, email=body_email, password=body_password)
+
+    # Verificar la validez del correo electrónico
+    if not validate_email(body_email):
+        return jsonify({"response": "Invalid email address"}), 400
+
+    # Verificar la fortaleza de la contraseña
+    if len(body_password) < 8:
+        return jsonify({"response": "Password must be at least 8 characters long"}), 400
+    elif not re.search(r"\d", body_password):
+        return jsonify({"response": "Password must contain at least one digit"}), 400
+    elif not re.search(r"[A-Z]", body_password):
+        return jsonify({"response": "Password must contain at least one uppercase letter"}), 400
+    elif not re.search(r"[a-z]", body_password):
+        return jsonify({"response": "Password must contain at least one lowercase letter"}), 400
+    elif not re.search(r"[!@#$%^&*(),.?\":{}|<>]", body_password):
+        return jsonify({"response": "Password must contain at least one special character"}), 400
+
+    # Hash de la contraseña antes de almacenarla en la base de datos
+    hashed_password = generate_password_hash(body_password)
+
+    new_user = User(name= body_name, email=body_email, password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
  
@@ -86,9 +113,20 @@ def create_pet():
         image_file = request.files['image_pet']
         filename = secure_filename(image_file.filename)
         image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-        image_file.save(image_path)
+    
+    # Abrir la imagen con Pillow
+        image = Image.open(image_file)
+
+    # Realizar el recorte de la imagen al tamaño deseado (626x626 píxeles)
+        cropped_image = crop_image(image, (626, 626))
+
+    # Guardar la imagen recortada
+        cropped_image.save(image_path)
+        #image_file.save(image_path)
+
+
     # Construye la URL de la imagen en el servidor de Gitpod
-        image_url = f"https://5500-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/uploads/{filename}"
+        image_url = f"https://5500-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/{filename}"
     else:
         image_url = None  # Si no se proporciona imagen, establecerla como None
 
@@ -143,14 +181,21 @@ def update_pet(pet_id):
 
     if 'image_pet' in request.files:
         image_file = request.files['image_pet']
+
+    # Abrir la imagen con Pillow
+        image = Image.open(image_file)
+
+    # Realizar el recorte de la imagen al tamaño deseado (626x626 píxeles)
+        cropped_image = crop_image(image, (626, 626))
+
         if image_file.filename != '':
             filename = secure_filename(image_file.filename)
             image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-            image_file.save(image_path)
+            cropped_image.save(image_path)
             # Reemplazar la imagen existente con la nueva
             if pet.image_pet_url:
                 os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], os.path.basename(pet.image_pet_url)))
-            pet.image_pet_url = f"https://5500-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/uploads/{filename}"
+            pet.image_pet_url = f"https://5500-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/{filename}"
 
     db.session.commit()
 
@@ -163,3 +208,14 @@ UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')  # Obtén la ruta completa 
 @api.route('/uploads/<path:filename>')  # Define una ruta para servir archivos desde la carpeta uploads
 def uploaded_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)  # Sirve el archivo desde la carpeta de uploads
+
+
+def crop_image(image, size):
+    """
+    Crop an image to the specified size without distortion.
+    """
+    
+    # Crop the image
+    cropped_image =  ImageOps.fit(image, size)
+    
+    return cropped_image
