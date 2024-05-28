@@ -12,3 +12,28 @@
   height: auto;
   object-fit: cover;
 }
+
+.modal-fullscreen {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+}
+
+.modal-content {
+  background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro y semitransparente */
+  border: none; /* Elimina el borde del modal */
+}
+
+.modal-image {
+  width: auto; /* Muestra la imagen en su tamaño original */
+  height: auto; /* Muestra la imagen en su tamaño original */
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.modal-body {
+  display: flex; /* Usa flexbox para alinear contenido */
+  justify-content: center; /* Centra horizontalmente el contenido */
+  align-items: center; /* Centra verticalmente el contenido */
+  height: 100%; /* Ajusta la altura del modal al 100% */
+}

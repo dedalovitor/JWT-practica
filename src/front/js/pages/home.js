@@ -194,16 +194,37 @@ export const Home = () => {
 													alt="..."
 												/>
 											)}
-											<p className="card-text">id: {x.id}</p>
-											<p className="card-text">age: {x.age}</p>
-											<p className="card-text">name: {x.name}</p>
-											<p className="card-text">race: {x.race}</p>
-											<p className="card-text">Castrated: {x.castrated ? 'Yes' : 'No'}</p>
-											<button className="btn btn-danger m-2" onClick={() => deletePet(x.id)}>DEL</button>
-											<button className="btn btn-primary m-2" onClick={() => setEditingPet({ ...x })}>Edit</button>
-											<Link to={"single/" + x.id}>
-												<button className="btn btn-primary m-2">Ir a detalles</button>
-											</Link>
+											<div className="row mt-3">
+												<div className="col text-start">
+													<p className="card-text">id: {x.id}</p>
+												</div>
+												<div className="col text-start">
+													<p className="card-text">age: {x.age}</p>
+												</div>
+
+											</div>
+											<div className="row">
+												<div className="col text-start">
+													<p className="card-text">name: {x.name}</p>
+												</div>
+												<div className="col text-start">
+													<p className="card-text">race: {x.race}</p>
+												</div>
+											</div>
+
+											<p className="card-text text-start">Castrated: {x.castrated ? 'Yes' : 'No'}</p>
+
+											<div className="row">
+												<div className="col"><button className="btn btn-primary " onClick={() => setEditingPet({ ...x })}>Edit</button></div>
+												<div className="col">
+													<Link to={"single/" + x.id}>
+														<button className="btn btn-primary">Details</button>
+													</Link>
+												</div>
+												<div className="col"><button className="btn btn-danger" onClick={() => deletePet(x.id)}>DEL</button></div>
+											</div>
+
+
 										</>
 									)}
 								</div>

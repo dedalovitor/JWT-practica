@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import current_app, send_from_directory  # Importa send_from_directory
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Pet
+from api.models import db, User, Pet, PetImage
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token
@@ -150,7 +150,8 @@ def get_all_current_user_pets():
 @api.route('/pet/<int:pet_id>', methods=['GET'])
 def get_pet_by_id(pet_id):
     pet = Pet.query.filter_by(id=pet_id).first()
-    return jsonify({"result": pet.serialize()}), 200
+    serialized_images = [image.serialize() for image in pet.images]
+    return jsonify({"result": pet.serialize(), "images": serialized_images}), 200
 
 
 @api.route('/pet/<int:pet_id>', methods=['DELETE'])
@@ -200,6 +201,41 @@ def update_pet(pet_id):
     db.session.commit()
 
     return jsonify({"message": "Pet updated successfully", "image_pet_url": pet.image_pet_url}), 200
+
+
+@api.route('/pet/<int:pet_id>/images', methods=['POST'])
+@jwt_required()
+def upload_pet_images(pet_id):
+    # Verificar si el usuario tiene permisos sobre la mascota
+    user_id = get_jwt_identity()
+    pet = Pet.query.filter_by(id=pet_id, user_id=user_id).first()
+    if not pet:
+        return jsonify({"error": "Pet not found or unauthorized access"}), 404
+
+    # Verificar si se proporcionan imágenes en la solicitud
+    if 'images' not in request.files:
+        return jsonify({"error": "No images provided"}), 400
+
+    images = request.files.getlist('images')
+
+    # Guardar las imágenes en el servidor y crear instancias de PetImage
+    image_urls = []
+    for image in images:
+        filename = secure_filename(image.filename)
+        image_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        image.save(image_path)
+        image_url = f"https://5500-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/{filename}"  # Construir la URL completa de la imagen
+        image_urls.append(image_url)
+
+    # Crear instancias de PetImage y guardarlas en la base de datos
+    for url in image_urls:
+        new_image = PetImage(pet_id=pet_id, url=url)
+        db.session.add(new_image)
+    db.session.commit()
+
+    return jsonify({"message": "Images uploaded successfully", "image_urls": image_urls}), 200
+
+
 
 
 # Línea para configurar la ruta estática

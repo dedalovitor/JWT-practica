@@ -33,10 +33,12 @@ class Pet(db.Model):
     castrated = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=True, default=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    images = db.relationship('PetImage', backref='pet', lazy=True)
 
     def serialize(self):
         # Convierte la imagen binaria a base64 si existe, de lo contrario, establece None
         #image_pet_base64 = base64.b64encode(self.image_pet).decode() if self.image_pet else None
+        images_serialized = [image.serialize() for image in self.images]
         return {
             "id": self.id,
             "image_pet_url": self.image_pet_url,            
@@ -44,9 +46,24 @@ class Pet(db.Model):
             "age": self.age,
             "race": self.race,
             "castrated": self.castrated,
+            "images": images_serialized, # Serializa las imágenes asociadas
             
             # do not serialize the password, its a security breach
         }
+
+
+class PetImage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), nullable= False)
+    url = db.Column(db.String(255))
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "pet_id": self.pet_id,
+            "url": self.url
+        }
+
 
 # Verificamos si estamos en el contexto de la aplicación Flask antes de ejecutar el código de alteración de la tabla. Verifica si el script se está ejecutando directamente y no como módulo importado
 if __name__ == '__main__':
