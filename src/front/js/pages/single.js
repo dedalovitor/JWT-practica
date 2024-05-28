@@ -151,7 +151,7 @@ export const Single = props => {
 			{petDetails.images && petDetails.images.length > 0 && (
 				<div className="container mt-2 mb-5">
 					<h2>Image Carousel</h2>
-					<Carousel>
+					<Carousel interval={null}> {/* Establece interval en null para deshabilitar el avance automático */}
 						{petDetails.images.map((image, index) => {
 							if (index % 4 === 0) {
 								return (
