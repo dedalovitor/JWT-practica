@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
 import { Link, useNavigate } from "react-router-dom";
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 export const Home = () => {
 	const navigate = useNavigate();
@@ -51,8 +52,8 @@ export const Home = () => {
 			}
 
 			const data = await response.json();
-			const petIds = data.results.map(pet => pet.id); // Obtener solo los IDs de las mascotas
-			setPetOrder(petIds); // Inicializar petOrder con los IDs de las mascotas
+			const petOrder = data.results.map(pet => pet.order_number); // Obtener solo los IDs de las mascotas
+			setPetOrder(petOrder); // Inicializar petOrder con los order number de las mascotas
 			setPets(data.results);
 		} catch (error) {
 			console.error("Error fetching pets:", error);
@@ -127,6 +128,18 @@ export const Home = () => {
 		}
 	};
 
+	const handleDragEnd = (result) => {
+		if (!result.destination) return; // El elemento se soltó fuera de un droppable
+
+		const startIndex = result.source.index;
+		const endIndex = result.destination.index;
+
+		const newPetOrder = Array.from(petOrder);
+		const [removed] = newPetOrder.splice(startIndex, 1);
+		newPetOrder.splice(endIndex, 0, removed);
+
+		setPetOrder(newPetOrder);
+	};
 
 	return (
 		<div className="mt-3 text-center ">
@@ -163,105 +176,117 @@ export const Home = () => {
 						</div>
 					</div>
 
-					<div className="row text-center">
-						{petOrder.map((petId, index) => {
 
-							const pet = pets.find((pet) => pet.id === petId);
-							if (!pet) {
-								// Si no se encuentra la mascota correspondiente en pets, no renderizar la tarjeta
-								return null;
-							}
-							return (
-								<div key={index} className="card m-2"
-									style={{ width: "18rem" }}>
-									<div className="card-body">
-										{editingPet && editingPet.id === pet.id ? (
-											<form>
-												<div className="form-group">
-													<label htmlFor="image_pet">Image</label>
-													<input type="file" className="form-control" id="image_pet" onChange={handleImageChange1} />
-												</div>
-												<div className="form-group">
-													<label htmlFor="name">Name</label>
-													<input type="text" className="form-control" id="name" value={editingPet.name} onChange={(e) => setEditingPet({ ...editingPet, name: e.target.value })} />
-												</div>
-												<div className="form-group">
-													<label htmlFor="age">Age</label>
-													<input type="number" className="form-control" id="age" value={editingPet.age} onChange={(e) => setEditingPet({ ...editingPet, age: e.target.value })} />
-												</div>
-												<div className="form-group">
-													<label htmlFor="race">Race</label>
-													<input type="text" className="form-control" id="race" value={editingPet.race} onChange={(e) => setEditingPet({ ...editingPet, race: e.target.value })} />
-												</div>
-												<div className="form-check">
-													<input type="checkbox" className="form-check-input" id="castrated" checked={editingPet.castrated} onChange={(e) => setEditingPet({ ...editingPet, castrated: e.target.checked })} />
-													<label className="form-check-label" htmlFor="castrated">Castrated</label>
-												</div>
-												<button type="button" className="btn btn-primary m-2" onClick={() => editPet()}>Save</button>
-												<button type="button" className="btn btn-secondary m-2" onClick={() => setEditingPet(null)}>Cancel</button>
-											</form>
-										) : (
-											<>
-												{pet.image_pet_url ? (
-													<img
-														src={pet.image_pet_url}
-														className="card-img-top"
-														alt={`Image of ${pet.name}`}
-													/>
-												) : (
-													// Si no hay imagen, muestra la imagen predeterminada
-													<img
-														src="https://img.freepik.com/fotos-premium/ilustracion-perro-dibujos-animados-3d-sobre-fondo-amarillo-pastel_639785-1211.jpg"
-														className="card-img-top"
-														alt="..."
-													/>
-												)}
-												<div className="row mt-3">
-													<div className="col text-start">
-														<p className="card-text">id: {pet.id}</p>
-													</div>
-													<div className="col text-start">
-														<p className="card-text">age: {pet.age}</p>
-													</div>
+					<div className="container d-flex flex-wrap">
+						<DragDropContext onDragEnd={handleDragEnd}>
+							<Droppable droppableId="droppable">
+								{(provided) => (
+									<div ref={provided.innerRef} {...provided.droppableProps}>
+										{petOrder.map((petOrder, index) => {
+											const pet = pets.find((pet) => pet.order_number === petOrder);
+											if (!pet) {
+												return null;
+											}
+											return (
+												<Draggable key={pet.id} draggableId={pet.id.toString()} index={index}>
+													{(provided) => (
+														<div
+															ref={provided.innerRef}
+															{...provided.draggableProps}
+															{...provided.dragHandleProps}
+														>
+															<div key={index} className="card m-2" style={{ width: "18rem" }}>
+																<div className="card-body">
+																	{editingPet && editingPet.id === pet.id ? (
+																		<form>
+																			<div className="form-group">
+																				<label htmlFor="image_pet">Image</label>
+																				<input type="file" className="form-control" id="image_pet" onChange={handleImageChange1} />
+																			</div>
+																			<div className="form-group">
+																				<label htmlFor="name">Name</label>
+																				<input type="text" className="form-control" id="name" value={editingPet.name} onChange={(e) => setEditingPet({ ...editingPet, name: e.target.value })} />
+																			</div>
+																			<div className="form-group">
+																				<label htmlFor="age">Age</label>
+																				<input type="number" className="form-control" id="age" value={editingPet.age} onChange={(e) => setEditingPet({ ...editingPet, age: e.target.value })} />
+																			</div>
+																			<div className="form-group">
+																				<label htmlFor="race">Race</label>
+																				<input type="text" className="form-control" id="race" value={editingPet.race} onChange={(e) => setEditingPet({ ...editingPet, race: e.target.value })} />
+																			</div>
+																			<div className="form-check">
+																				<input type="checkbox" className="form-check-input" id="castrated" checked={editingPet.castrated} onChange={(e) => setEditingPet({ ...editingPet, castrated: e.target.checked })} />
+																				<label className="form-check-label" htmlFor="castrated">Castrated</label>
+																			</div>
+																			<button type="button" className="btn btn-primary m-2" onClick={() => editPet()}>Save</button>
+																			<button type="button" className="btn btn-secondary m-2" onClick={() => setEditingPet(null)}>Cancel</button>
+																		</form>
+																	) : (
+																		<>
+																			{pet.image_pet_url ? (
+																				<img
+																					src={pet.image_pet_url}
+																					className="card-img-top"
+																					alt={`Image of ${pet.name}`}
+																				/>
+																			) : (
+																				// Si no hay imagen, muestra la imagen predeterminada
+																				<img
+																					src="https://img.freepik.com/fotos-premium/ilustracion-perro-dibujos-animados-3d-sobre-fondo-amarillo-pastel_639785-1211.jpg"
+																					className="card-img-top"
+																					alt="..."
+																				/>
+																			)}
+																			<div className="row mt-3">
+																				<div className="col text-start">
+																					<p className="card-text">id: {pet.id}</p>
+																				</div>
+																				<div className="col text-start">
+																					<p className="card-text">age: {pet.age}</p>
+																				</div>
 
-												</div>
-												<div className="row">
-													<div className="col text-start">
-														<p className="card-text">name: {pet.name}</p>
-													</div>
-													<div className="col text-start">
-														<p className="card-text">race: {pet.race}</p>
-													</div>
-												</div>
+																			</div>
+																			<div className="row">
+																				<div className="col text-start">
+																					<p className="card-text">name: {pet.name}</p>
+																				</div>
+																				<div className="col text-start">
+																					<p className="card-text">race: {pet.race}</p>
+																				</div>
+																			</div>
 
-												<p className="card-text text-start">Castrated: {pet.castrated ? 'Yes' : 'No'}</p>
+																			<p className="card-text text-start">Castrated: {pet.castrated ? 'Yes' : 'No'}</p>
 
-												<div className="row">
-													<div className="col"><button className="btn btn-primary " onClick={() => setEditingPet({ ...pet })}>Edit</button></div>
-													<div className="col">
-														<Link to={"single/" + pet.id}>
-															<button className="btn btn-primary">Details</button>
-														</Link>
-													</div>
-													<div className="col"><button className="btn btn-danger" onClick={() => deletePet(pet.id)}>DEL</button></div>
-												</div>
+																			<div className="row">
+																				<div className="col"><button className="btn btn-primary " onClick={() => setEditingPet({ ...pet })}>Edit</button></div>
+																				<div className="col">
+																					<Link to={"single/" + pet.id}>
+																						<button className="btn btn-primary">Details</button>
+																					</Link>
+																				</div>
+																				<div className="col"><button className="btn btn-danger" onClick={() => deletePet(pet.id)}>DEL</button></div>
+																			</div>
 
 
-											</>
-										)}
+																		</>
+																	)}
+																</div>
+															</div>
+														</div>
+													)}
+												</Draggable>
+											);
+										})}
+										{provided.placeholder}
 									</div>
-								</div>
-							)
-						})}
-						{/* Mueve los console.log aquí */}
-						{console.log("Pet Order Length:", petOrder.length)}
-						{console.log("Pets:", pets)}
-						{console.log("Pet Order:", petOrder)}
-					</div>
-				</div>
-				: "Please register a pet!"
-			}
+								)}
+							</Droppable>
+						</DragDropContext>
 
+					</div >
+
+				</div > : "please register a pet"}
 		</div >
 	);
 };

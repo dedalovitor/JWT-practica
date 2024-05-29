@@ -241,6 +241,18 @@ def upload_pet_images(pet_id):
     return jsonify({"message": "Images uploaded successfully", "image_urls": image_urls}), 200
 
 
+@api.route('/pets/order', methods=['POST'])
+@jwt_required()
+def update_pet_order():
+    user_id = get_jwt_identity()
+    new_order = request.json.get("order")
+    
+    # Actualiza el orden de las mascotas en la base de datos
+    # Esto dependerá de cómo esté estructurada tu base de datos y de cómo almacenes el orden de las mascotas
+    
+    return jsonify({"message": "Pet order updated successfully"}), 200
+
+
 
 # Línea para configurar la ruta estática
 UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')  # Obtén la ruta completa de la carpeta de uploads
