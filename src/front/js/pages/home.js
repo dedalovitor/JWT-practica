@@ -180,7 +180,7 @@ export const Home = () => {
 					<div className="container ">
 						<div className="row d-flex flex-wrap justify-content-center">
 							<DragDropContext onDragEnd={handleDragEnd}>
-								<Droppable droppableId="droppable">
+								<Droppable droppableId="droppable" direction="horizontal">
 									{(provided) => (
 										<div ref={provided.innerRef} {...provided.droppableProps} className="row">
 											{petOrder.map((petOrder, index) => {
@@ -195,7 +195,7 @@ export const Home = () => {
 																ref={provided.innerRef}
 																{...provided.draggableProps}
 																{...provided.dragHandleProps}
-																className="col-md-4" // Define el tamaño de la columna
+																className="col-md-3" // Define el tamaño de la columna
 															>
 																<div key={index} className="card m-2" style={{ width: "18rem" }}>
 																	<div className="card-body">
