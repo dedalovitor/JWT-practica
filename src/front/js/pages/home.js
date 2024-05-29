@@ -242,10 +242,10 @@ export const Home = () => {
 																				)}
 																				<div className="row mt-3">
 																					<div className="col text-start">
-																						<p className="card-text">id: {pet.order_number}</p>
+																						<p className="card-text">order: {pet.order_number}</p>
 																					</div>
 																				</div>
-																				<div className="row mt-3">
+																				<div className="row">
 																					<div className="col text-start">
 																						<p className="card-text">id: {pet.id}</p>
 																					</div>
