@@ -32,6 +32,7 @@ class Pet(db.Model):
     age = db.Column(db.Integer, unique=False, nullable=False)
     castrated = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=True, default=True)
+    order_number = db.Column(db.Integer, nullable=False)  # Nueva columna para almacenar el número de orden
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     images = db.relationship('PetImage', backref='pet', lazy=True)
 
@@ -47,6 +48,7 @@ class Pet(db.Model):
             "race": self.race,
             "castrated": self.castrated,
             "images": images_serialized, # Serializa las imágenes asociadas
+            "order_number": self.order_number, 
             
             # do not serialize the password, its a security breach
         }

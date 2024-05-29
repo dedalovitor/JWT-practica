@@ -104,10 +104,14 @@ def user_register():
 @jwt_required()
 def create_pet():
     user_id = get_jwt_identity()
+    # Obtener el número total de mascotas del usuario
+    total_pets = Pet.query.filter_by(user_id=user_id).count()
     body_name = request.form.get("name")
     body_age = request.form.get("age")
     body_race = request.form.get("race")
     body_castrated = request.form.get("castrated") == 'true'  # Convert to boolean
+     # Asignar el número de orden basado en el total de mascotas
+    order_number = total_pets + 1
     if 'image_pet' in request.files:
     # Guardar la imagen en el sistema de archivos
         image_file = request.files['image_pet']
@@ -130,7 +134,7 @@ def create_pet():
     else:
         image_url = None  # Si no se proporciona imagen, establecerla como None
 
-    new_pet = Pet(name=body_name, age=int(body_age), race=body_race, castrated=body_castrated, user_id=user_id, image_pet_url=image_url)
+    new_pet = Pet(name=body_name, age=int(body_age), race=body_race, castrated=body_castrated, user_id=user_id, image_pet_url=image_url, order_number=order_number) # order_number: Asigna el número de orden
     db.session.add(new_pet)
     db.session.commit()
 
@@ -141,7 +145,8 @@ def create_pet():
 @jwt_required()
 def get_all_current_user_pets():
     user_id = get_jwt_identity()
-    pets = Pet.query.filter_by(user_id=user_id, is_active = True).order_by(Pet.id).all()
+    # Obtener todas las mascotas del usuario y ordenarlas por order_number ascendente
+    pets = Pet.query.filter_by(user_id=user_id, is_active=True).order_by(Pet.order_number).all()
     pets_serialized = [pet.serialize() for pet in pets]
     return jsonify({"results": pets_serialized}), 200
 
@@ -234,7 +239,6 @@ def upload_pet_images(pet_id):
     db.session.commit()
 
     return jsonify({"message": "Images uploaded successfully", "image_urls": image_urls}), 200
-
 
 
 
