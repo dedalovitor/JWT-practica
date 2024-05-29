@@ -242,12 +242,16 @@ export const Home = () => {
 																				)}
 																				<div className="row mt-3">
 																					<div className="col text-start">
+																						<p className="card-text">id: {pet.order_number}</p>
+																					</div>
+																				</div>
+																				<div className="row mt-3">
+																					<div className="col text-start">
 																						<p className="card-text">id: {pet.id}</p>
 																					</div>
 																					<div className="col text-start">
 																						<p className="card-text">age: {pet.age}</p>
 																					</div>
-
 																				</div>
 																				<div className="row">
 																					<div className="col text-start">
@@ -282,7 +286,8 @@ export const Home = () => {
 											})}
 											{provided.placeholder}
 										</div>
-									)}
+									)
+									}
 								</Droppable>
 							</DragDropContext>
 						</div>
