@@ -241,25 +241,7 @@ def upload_pet_images(pet_id):
     return jsonify({"message": "Images uploaded successfully", "image_urls": image_urls}), 200
 
 
-@api.route('/update-pet-order', methods=['PUT'])
-@jwt_required()
-def update_pet_order():
-    try:
-        user_id = get_jwt_identity()
-        data = request.get_json()
-        pet_order = data.get("petOrder")
-        
-        # Actualizar el order_number de cada mascota
-        for index, pet_id in enumerate(pet_order):
-            pet = Pet.query.filter_by(id=pet_id, user_id=user_id).first()
-            if pet:
-                pet.order_number = index + 1
-        
-        db.session.commit()
-        
-        return jsonify({"message": "Pet order updated successfully"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+
 
 
 
