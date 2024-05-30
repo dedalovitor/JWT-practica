@@ -139,26 +139,6 @@ export const Home = () => {
 		newPetOrder.splice(endIndex, 0, removed);
 
 		setPetOrder(newPetOrder);
-
-		// Actualizar el order_number de cada pet en la base de datos
-		try {
-			const response = await fetch("https://3001-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/api/update-pet-order", {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-					"Authorization": "Bearer " + localStorage.getItem("token")
-				},
-				body: JSON.stringify({ petOrder: newPetOrder })
-			});
-
-			if (!response.ok) {
-				throw new Error("Failed to update pet order in the database");
-			}
-
-			console.log("Order updated successfully in the database");
-		} catch (error) {
-			console.error("Error updating pet order:", error);
-		}
 	};
 
 	return (
