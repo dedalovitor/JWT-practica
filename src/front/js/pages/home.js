@@ -71,9 +71,9 @@ export const Home = () => {
 		formData.append("castrated", pet.castrated);
 		formData.append("image_pet", pet.image_pet);
 		// Obtener el último número de orden
-		const lastOrderNumber = petOrder.length > 0 ? Math.max(...petOrder) : 0;
+		const lastOrderNumber = petOrder.length > 0 ? petOrder.length : 0;
 		// Agregar el índice de orden al FormData y Asignar el nuevo número de orden
-		formData.append("order_number", lastOrderNumber + 1);
+		formData.append("order_number", lastOrderNumber);
 
 		const response = await fetch("https://3001-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/api/pet", {
 			method: "POST",
