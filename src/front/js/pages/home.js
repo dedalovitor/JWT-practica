@@ -128,7 +128,7 @@ export const Home = () => {
 		}
 	};
 
-	const handleDragEnd = async (result) => {
+	const handleDragEnd = (result) => {
 		if (!result.destination) return; // El elemento se soltó fuera de un droppable
 
 		const startIndex = result.source.index;
@@ -139,6 +139,12 @@ export const Home = () => {
 		newPetOrder.splice(endIndex, 0, removed);
 
 		setPetOrder(newPetOrder);
+
+		// Imprimir el índice de cada elemento del array petOrder
+		newPetOrder.forEach((element, index) => {
+			console.log(`El índice del elemento ${element} es: ${index}`);
+		});
+
 	};
 
 	return (
