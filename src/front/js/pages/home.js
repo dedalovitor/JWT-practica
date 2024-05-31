@@ -128,7 +128,7 @@ export const Home = () => {
 		}
 	};
 
-	const handleDragEnd = (result) => {
+	const handleDragEnd = async (result) => {
 		if (!result.destination) return; // El elemento se soltó fuera de un droppable
 
 		const startIndex = result.source.index;
@@ -145,7 +145,31 @@ export const Home = () => {
 			console.log(`El índice del elemento ${element} es: ${index}`);
 		});
 
+		// Obtener todas las IDs de las mascotas implicadas en el reordenamiento
+		const petIdsInOrder = newPetOrder.map(petIndex => {
+			const pet = pets.find(p => p.order_number === petIndex);
+			return pet.id;
+		});
+
+		try {
+			const response = await fetch('https://3001-dedalovitor-jwtpractica-acyju4v31d4.ws-eu114.gitpod.io/api/update-order', {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					"Authorization": "Bearer " + localStorage.getItem("token")
+				},
+				body: JSON.stringify({ petOrder: newPetOrder, petIds: petIdsInOrder })
+			});
+			if (response.ok) {
+				// Actualiza la lista de mascotas para reflejar los cambios
+				getCurrentUserPets();
+			}
+			// Manejar la respuesta si es necesario
+		} catch (error) {
+			console.error('Error updating order:', error);
+		}
 	};
+
 
 	return (
 		<div className="mt-3 text-center ">
@@ -189,8 +213,8 @@ export const Home = () => {
 								<Droppable droppableId="droppable" direction="horizontal">
 									{(provided) => (
 										<div ref={provided.innerRef} {...provided.droppableProps} className="row">
-											{petOrder.map((petOrder, index) => {
-												const pet = pets.find((pet) => pet.order_number === petOrder);
+											{petOrder.map((petId, index) => {
+												const pet = pets.find((pet) => pet.order_number === petId);
 												if (!pet) {
 													return null;
 												}

@@ -241,7 +241,28 @@ def upload_pet_images(pet_id):
     return jsonify({"message": "Images uploaded successfully", "image_urls": image_urls}), 200
 
 
+@api.route('/update-order', methods=['PUT'])
+@jwt_required()
+def update_order():
+    # Verificar si el usuario tiene permisos sobre la mascota
+    user_id = get_jwt_identity()
+    data = request.json
+    new_order = data.get('petIds')
 
+# Iterar sobre el nuevo orden y actualizar el número de orden de cada mascota
+    for index, new_pet_id in enumerate(new_order):
+        # Verificar si el usuario tiene permisos sobre la mascota
+        pet = Pet.query.filter_by(id=new_pet_id, user_id=user_id).first()
+        if pet:
+            # Actualizar el número de orden de la mascota
+            pet.order_number = index
+        else:
+            # Si el usuario no tiene permisos sobre la mascota, devolver un error 403
+            return jsonify({'error': 'User does not have permission to update this pet'}), 403
+    
+    db.session.commit()
+    
+    return jsonify({'message': 'Order updated successfully'}), 200
 
 
 
