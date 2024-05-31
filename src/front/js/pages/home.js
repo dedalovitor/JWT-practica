@@ -134,9 +134,9 @@ export const Home = () => {
 		const startIndex = result.source.index;
 		const endIndex = result.destination.index;
 
-		const newPetOrder = Array.from(petOrder);
-		const [removed] = newPetOrder.splice(startIndex, 1);
-		newPetOrder.splice(endIndex, 0, removed);
+		const newPetOrder = Array.from(petOrder);  // Crear una copia de la lista de mascotas ordenada
+		const [removed] = newPetOrder.splice(startIndex, 1); // Remover la mascota de la posición inicial
+		newPetOrder.splice(endIndex, 0, removed); // Insertar la mascota en la posición final
 
 		setPetOrder(newPetOrder);
 
@@ -206,10 +206,10 @@ export const Home = () => {
 						</div>
 					</div>
 
+					<DragDropContext onDragEnd={handleDragEnd}>
+						<div className="container ">
+							<div className="d-flex flex-wrap justify-content-center">
 
-					<div className="container ">
-						<div className="row d-flex flex-wrap justify-content-center">
-							<DragDropContext onDragEnd={handleDragEnd}>
 								<Droppable droppableId="droppable" direction="horizontal">
 									{(provided) => (
 										<div ref={provided.innerRef} {...provided.droppableProps} className="row">
@@ -319,11 +319,13 @@ export const Home = () => {
 									)
 									}
 								</Droppable>
-							</DragDropContext>
-						</div>
-					</div >
 
-				</div > : "please register a pet"}
+							</div>
+						</div >
+					</DragDropContext>
+
+				</div > : "please register a pet"
+			}
 		</div >
 	);
 };

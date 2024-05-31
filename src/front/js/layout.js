@@ -11,6 +11,7 @@ import { Single } from "./pages/single";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
+import { Row } from "./component/row";
 
 
 //create your first component
